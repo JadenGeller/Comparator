@@ -19,7 +19,7 @@ extension Ordering {
         else              { self = .Same }
     }
     
-    public init<C: Equatable>(_ lhs: C, _ rhs: C, isOrderedBefore: (C, C) -> Bool) {
+    public init<C: Equatable>(_ lhs: C, _ rhs: C, isOrderedBefore: @noescape (C, C) -> Bool) {
         guard lhs != rhs else { self = .Same }
         self = isOrderedBefore(lhs, rhs) ? .Ascending : .Descending
     }
