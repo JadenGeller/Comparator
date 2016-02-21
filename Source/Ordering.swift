@@ -10,11 +10,18 @@ public enum Ordering {
     case Ascending
     case Same
     case Descending
-    
-    init<C: Comparable>(_ lhs: C, _ rhs: C) {
+}
+
+extension Ordering {
+    public init<C: Comparable>(_ lhs: C, _ rhs: C) {
         if      lhs < rhs { self = .Ascending }
         else if lhs > rhs { self = .Descending }
         else              { self = .Same }
+    }
+    
+    public init<C: Equatable>(_ lhs: C, _ rhs: C, isOrderedBefore: (C, C) -> Bool) {
+        guard lhs != rhs else { self = .Same }
+        self = isOrderedBefore(lhs, rhs) ? .Ascending : .Descending
     }
 }
 
