@@ -24,9 +24,14 @@ extension Ordering {
         else { self = isOrderedBefore(lhs, rhs) ? .Ascending : .Descending }
     }
     
-    public init<C>(_ lhs: C, _ rhs: C, isEqual: @noescape (C, C) -> Bool, isOrderedBefore: @noescape (C, C) -> Bool) {
-        if lhs == rhs { self = .Same }
-        else { self = isOrderedBefore(lhs, rhs) ? .Ascending : .Descending }
+    // Assumes stict-weak ordering
+    public init<C>(_ lhs: C, _ rhs: C, isOrderedBefore: @noescape (C, C) -> Bool) {
+        switch (lhs < rhs, lhs > rhs) {
+        case (false, false): self = .Same
+        case (true, false):  self = .Ascending
+        case (false, true):  self = .Descending
+        case (true, true): fatalError("`isOrderedBefore` must use a strict weak ordering.")
+        }
     }
 }
 
