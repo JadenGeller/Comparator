@@ -19,14 +19,14 @@ extension Ordering {
         else              { self = .Same }
     }
     
-    public init<C: Equatable>(_ lhs: C, _ rhs: C, isOrderedBefore: @noescape (C, C) -> Bool) {
+    public init<C: Equatable>(_ lhs: C, _ rhs: C, @noescape isOrderedBefore: (C, C) -> Bool) {
         if lhs == rhs { self = .Same }
         else { self = isOrderedBefore(lhs, rhs) ? .Ascending : .Descending }
     }
     
     // Assumes stict-weak ordering
-    public init<C>(_ lhs: C, _ rhs: C, isOrderedBefore: @noescape (C, C) -> Bool) {
-        switch (lhs < rhs, lhs > rhs) {
+    public init<C>(_ lhs: C, _ rhs: C, @noescape isOrderedBefore: (C, C) -> Bool) {
+        switch (isOrderedBefore(lhs, rhs), isOrderedBefore(rhs, lhs)) {
         case (false, false): self = .Same
         case (true, false):  self = .Ascending
         case (false, true):  self = .Descending
