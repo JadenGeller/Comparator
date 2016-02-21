@@ -20,8 +20,8 @@ extension Ordering {
     }
     
     public init<C: Equatable>(_ lhs: C, _ rhs: C, isOrderedBefore: (C, C) -> Bool) {
-        guard lhs != rhs else { self = .Same }
-        self = isOrderedBefore(lhs, rhs) ? .Ascending : .Descending
+        if lhs == rhs { self = .Same }
+        else { self = isOrderedBefore(lhs, rhs) ? .Ascending : .Descending }
     }
 }
 
