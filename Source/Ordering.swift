@@ -23,12 +23,6 @@ extension Ordering {
         else              { self = .same }
     }
     
-    /// Creates an instance from two equatable values and an ordering function.
-    public init<C: Equatable>(_ lhs: C, _ rhs: C, by areIncreasingInOrdering: (C, C) -> Bool) {
-        if lhs == rhs { self = .same }
-        else { self = areIncreasingInOrdering(lhs, rhs) ? .ascending : .descending }
-    }
-    
     /// Creates an instance from two values and an ordering function
     /// which imposes a strict total order.
     public init<C>(_ lhs: C, _ rhs: C, by areIncreasingInOrdering: (C, C) -> Bool) {
