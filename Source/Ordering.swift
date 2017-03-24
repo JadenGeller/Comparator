@@ -24,15 +24,15 @@ extension Ordering {
     }
     
     /// Creates an instance from two equatable values and an ordering function.
-    public init<C: Equatable>(_ lhs: C, _ rhs: C, isOrderedBefore: (C, C) -> Bool) {
+    public init<C: Equatable>(_ lhs: C, _ rhs: C, by areIncreasingInOrdering: (C, C) -> Bool) {
         if lhs == rhs { self = .same }
-        else { self = isOrderedBefore(lhs, rhs) ? .ascending : .descending }
+        else { self = areIncreasingInOrdering(lhs, rhs) ? .ascending : .descending }
     }
     
     /// Creates an instance from two values and an ordering function
     /// which imposes a strict total order.
-    public init<C>(_ lhs: C, _ rhs: C, isOrderedBefore: (C, C) -> Bool) {
-        switch (isOrderedBefore(lhs, rhs), isOrderedBefore(rhs, lhs)) {
+    public init<C>(_ lhs: C, _ rhs: C, by areIncreasingInOrdering: (C, C) -> Bool) {
+        switch (areIncreasingInOrdering(lhs, rhs), areIncreasingInOrdering(rhs, lhs)) {
         case (false, false): self = .same
         case (true, false):  self = .ascending
         case (false, true):  self = .descending
