@@ -30,7 +30,7 @@ extension Ordering {
         case (false, false): self = .same
         case (true, false):  self = .ascending
         case (false, true):  self = .descending
-        case (true, true): fatalError("`isOrderedBefore` must use a strict weak ordering.")
+        case (true, true): fatalError("`areIncreasingInOrdering` must impose a strict total order.")
         }
     }
 }
