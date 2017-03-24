@@ -1,55 +1,60 @@
 //
 //  Ordering.swift
-//  Ordering
+//  Comparator
 //
-//  Created by Jaden Geller on 10/29/15.
-//  Copyright © 2015 Jaden Geller. All rights reserved.
+//  Created by Jaden Geller.
 //
 
+/// Describes the relative ordering of a pair of values.
 public enum Ordering {
-    case Ascending
-    case Same
-    case Descending
+    /// The second value is greater than the first value.
+    case ascending
+    /// The second value is equal to the first value.
+    case same
+    /// The second value is less than the first value.
+    case descending
 }
 
 extension Ordering {
-    public init<C: Comparable>(_ lhs: C, _ rhs: C) {
-        if      lhs < rhs { self = .Ascending }
-        else if lhs > rhs { self = .Descending }
-        else              { self = .Same }
+    /// Creates an instance from two comparable values.
+    public init<C: Comparable>(from lhs: C, to rhs: C) {
+        if      lhs < rhs { self = .ascending }
+        else if lhs > rhs { self = .descending }
+        else              { self = .same }
     }
     
-    public init<C: Equatable>(_ lhs: C, _ rhs: C, @noescape isOrderedBefore: (C, C) -> Bool) {
-        if lhs == rhs { self = .Same }
-        else { self = isOrderedBefore(lhs, rhs) ? .Ascending : .Descending }
+    /// Creates an instance from two equatable values and an ordering function.
+    public init<C: Equatable>(_ lhs: C, _ rhs: C, isOrderedBefore: (C, C) -> Bool) {
+        if lhs == rhs { self = .same }
+        else { self = isOrderedBefore(lhs, rhs) ? .ascending : .descending }
     }
     
-    // Assumes stict-weak ordering
-    public init<C>(_ lhs: C, _ rhs: C, @noescape isOrderedBefore: (C, C) -> Bool) {
+    /// Creates an instance from two values and an ordering function
+    /// which imposes a strict total order.
+    public init<C>(_ lhs: C, _ rhs: C, isOrderedBefore: (C, C) -> Bool) {
         switch (isOrderedBefore(lhs, rhs), isOrderedBefore(rhs, lhs)) {
-        case (false, false): self = .Same
-        case (true, false):  self = .Ascending
-        case (false, true):  self = .Descending
+        case (false, false): self = .same
+        case (true, false):  self = .ascending
+        case (false, true):  self = .descending
         case (true, true): fatalError("`isOrderedBefore` must use a strict weak ordering.")
         }
     }
 }
 
 extension Ordering {
+    /// Returns an instance where the direction is reversed.
     public var reversed: Ordering {
         switch self {
-        case .Ascending:  return .Descending
-        case .Descending: return .Ascending
-        case .Same:       return .Same
+        case .ascending:  return .descending
+        case .descending: return .ascending
+        case .same:       return .same
         }
     }
 }
 
-infix operator <=> {
-    associativity none
-    precedence 130
-}
+infix operator <=> : ComparisonPrecedence
 
+/// Constructs an ordering instance from two comparable values.
 public func <=><C: Comparable>(lhs: C, rhs: C) -> Ordering {
-    return Ordering(lhs, rhs)
+    return Ordering(from: lhs, to: rhs)
 }
